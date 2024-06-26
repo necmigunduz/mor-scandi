@@ -21,7 +21,18 @@ export class ProductListPageComponent extends SourceProductListPageComponent {
             },
         } = this.props;
 
-        const sortedItems = Array.from(items).sort((a, b) => b.in_stock - a.in_stock);
+        // Sort items: OUT_OF_STOCK items moved to the end
+        const sortedItems = Array.from(items).sort((a, b) => {
+            if (a.stock_status === 'OUT_OF_STOCK' && b.stock_status !== 'OUT_OF_STOCK') {
+                return 1;
+            }
+
+            if (a.stock_status !== 'OUT_OF_STOCK' && b.stock_status === 'OUT_OF_STOCK') {
+                return -1;
+            }
+
+            return 0;
+        });
 
         return sortedItems.map((product, index) => {
             if (index < PRODUCTS_PRELOAD_COUNT) {
